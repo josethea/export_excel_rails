@@ -1,0 +1,23 @@
+wb = xlsx_package.workbook
+
+wb.styles do |style|
+	title = style.add_style(:bg_color => "ffffff", :fg_color=>"000000", :sz=>12)
+	wb.add_worksheet(name: "Anexo B") do |sheet|
+		sheet.merge_cells "A1:G1"
+		sheet.add_row ['ANEXO B - SOLICITUD DE AUTORIZACIÓN DE TRANSITO'], :style=>title
+
+		sheet.merge_cells "A2:G20"
+		sheet.add_row ['SEGUNDA LINEA'], :style=>title
+
+		# img = File.expand_path(Rails.root+'app/assets/images/selfieperroo.jpg')
+		# sheet.add_image(:image_src => img, :noSelect => false, :noMove => false) do |image|
+	 #      image.width=720
+	 #      image.height=666
+	 #      image.start_at 0, 0
+	 #    end
+		#sheet.add_row ['My first excel file']
+		# @products.each do |product|
+		# 	sheet.add_row [product.title, product.price]
+		# end
+	end
+end
