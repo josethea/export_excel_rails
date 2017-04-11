@@ -1,23 +1,610 @@
+# img = File.expand_path(Rails.root+'app/assets/images/selfieperroo.jpg')
+# @products.each do |product|
+# 	sheet.add_row [product.title, product.price]
+# end
 wb = xlsx_package.workbook
 
-wb.styles do |style|
-	title = style.add_style(:bg_color => "ffffff", :fg_color=>"000000", :sz=>12)
-	wb.add_worksheet(name: "Anexo B") do |sheet|
-		sheet.merge_cells "A1:G1"
-		sheet.add_row ['ANEXO B - SOLICITUD DE AUTORIZACIÓN DE TRANSITO'], :style=>title
+wb.styles do |s|
+	header_row = s.add_style :border => { :style => :thin, :color => "00" }, :bg_color => "dbdcdd", :alignment => { :horizontal=> :center, :vertical => :center }
+	body_row = s.add_style :border => { :style => :thin, :color => "00" }, :alignment => { :horizontal=> :center, :vertical => :center }
+	wb.add_worksheet(:name => "Anexo B") do |sheet|
+		sheet.sheet_view.show_grid_lines = false
 
-		sheet.merge_cells "A2:G20"
-		sheet.add_row ['SEGUNDA LINEA'], :style=>title
+		sheet.add_row []
 
-		# img = File.expand_path(Rails.root+'app/assets/images/selfieperroo.jpg')
-		# sheet.add_image(:image_src => img, :noSelect => false, :noMove => false) do |image|
-	 #      image.width=720
-	 #      image.height=666
-	 #      image.start_at 0, 0
-	 #    end
-		#sheet.add_row ['My first excel file']
-		# @products.each do |product|
-		# 	sheet.add_row [product.title, product.price]
-		# end
+		sheet.add_row ["ANEXO B - SOLICITUD DE AUTORIZACIÓN DE TRÁNSITO", "", "", "", ""], :sz=>14
+		sheet.merge_cells("A2:E2")
+
+		sheet.add_row []
+
+		sheet.add_row ["", "Solicitante", "", ""], :style => header_row
+		sheet.merge_cells("A4:E4")
+		sheet.add_row ["", "Apellido y Nombre", "", ""], :style => body_row
+		sheet.merge_cells("A5:E5")
+		sheet.add_row ["", "Guillen Martinez Jesus", "", ""], :style => body_row
+		sheet.merge_cells("A6:E6")
+
+		sheet.add_row []
+
+		sheet.add_row ["", "Cel. Contacto Convoy", "Cel. Telefono Satelital", "Area Dueño de Contrato", ""], :style => header_row
+		sheet.merge_cells("A8:B8")
+		sheet.merge_cells("D8:E8")
+		sheet.add_row ["", "C4 - 992382069", "", "", ""], :style => body_row
+		sheet.merge_cells("A9:B9")
+		sheet.merge_cells("D9:E9")
+		sheet.add_row ["", "C9 - 940102599", "", "", ""], :style => body_row
+		sheet.merge_cells("A9:B9")
+		sheet.merge_cells("D9:E9")
+		sheet.add_row ["", "C8 PC - 961787532", "", "", ""], :style => body_row
+		sheet.merge_cells("A10:B10")
+		sheet.merge_cells("D10:E10")
+		# sheet.add_table "A1:E4", :name => 'Solicitante', :style_info => { :name => "TableStyleMedium23" }
+
+		sheet.column_widths 6, 12, 18, 9, 9
+		#sheet["A1:D5"].each { |c| c.style = Axlsx::STYLE_THIN_BORDER }
 	end
 end
+
+##########################
+
+	wb.add_worksheet(:name => "Basic Worksheet") do |sheet|
+		sheet.add_row ["First Column", "Second", "Third"]
+		sheet.add_row [1, 2, 3]
+		sheet.add_row ['     preserving whitespace']
+	end
+
+	############################
+
+	wb.styles do |s|
+    black_cell = s.add_style :bg_color => "00", :fg_color => "FF", :sz => 14, :alignment => { :horizontal=> :center }
+    blue_cell =  s.add_style  :bg_color => "0000FF", :fg_color => "FF", :sz => 20, :alignment => { :horizontal=> :center }
+    wb.add_worksheet(:name => "Custom Styles") do |sheet|
+
+      # Applies the black_cell style to the first and third cell, and the blue_cell style to the second.
+      sheet.add_row ["Text Autowidth", "Second", "Third"], :style => [black_cell, blue_cell, black_cell]
+
+      # Applies the thin border to all three cells
+      sheet.add_row [1, 2, 3], :style => Axlsx::STYLE_THIN_BORDER
+    end
+  end
+	#
+	# ############################
+	#
+	wb.styles do |s|
+    wrap_text = s.add_style :fg_color=> "FFFFFF",
+                            :b => true,
+                            :bg_color => "004586",
+                            :sz => 12,
+                            :border => { :style => :thin, :color => "00" },
+                            :alignment => { :horizontal => :center,
+                                            :vertical => :center ,
+                                            :wrap_text => true}
+    wb.add_worksheet(:name => 'wrap text') do |sheet|
+      sheet.add_row ['Torp, White and Cronin'], :style=>wrap_text
+      sheet.column_info.first.width = 5
+    end
+  end
+	#
+	# ############################
+	#
+	wb.add_worksheet(:name => "Cell Level Style Overrides") do |sheet|
+
+    # this will set the font size for each cell.
+    sheet.add_row ['col 1', 'col 2', 'col 3', 'col 4'], :sz => 16
+
+    sheet.add_row [1, 2, 3, "=SUM(A2:C2)"]
+    sheet.add_row %w(u shadow sz b i strike outline)
+    sheet.rows.last.cells[0].u = :double
+    sheet.rows.last.cells[1].shadow = true
+    sheet.rows.last.cells[2].sz = 20
+    sheet.rows.last.cells[3].b = true
+    sheet.rows.last.cells[4].i = true
+    sheet.rows.last.cells[5].strike = true
+    sheet.rows.last.cells[6].outline = 1
+    # You can also apply cell style overrides to a range of cells
+    sheet["A1:D1"].each { |c| c.color = "FF0000" }
+    sheet['A1:D2'].each { |c| c.style = Axlsx::STYLE_THIN_BORDER }
+  end
+	#
+	# ############################
+	#
+	wb.styles do |s|
+    red_border =  s.add_style :border => { :style => :thick, :color =>"FFFF0000", :edges => [:left, :right] }
+    blue_border =  s.add_style :border => { :style => :thick, :color =>"FF0000FF"}
+
+    wb.add_worksheet(:name => "Custom Borders") do |sheet|
+      sheet.add_row ["wrap", "me", "Up in Red"], :style => red_border
+      sheet.add_row [1, 2, 3], :style => blue_border
+    end
+  end
+	#
+	# ############################
+	#
+	defaults =  { :style => :thick, :color => "000000" }
+  borders = Hash.new do |hash, key|
+    hash[key] = wb.styles.add_style :border => defaults.merge( { :edges => key.to_s.split('_').map(&:to_sym) } )
+  end
+  top_row =  [0, borders[:top_left], borders[:top], borders[:top], borders[:top_right]]
+  middle_row = [0, borders[:left], nil, nil, borders[:right]]
+  bottom_row = [0, borders[:bottom_left], borders[:bottom], borders[:bottom], borders[:bottom_right]]
+
+  wb.add_worksheet(:name => "Surrounding Border") do |ws|
+    ws.add_row []
+    ws.add_row ['', 1,2,3,4], :style => top_row
+    ws.add_row ['', 5,6,7,8], :style => middle_row
+    ws.add_row ['', 9, 10, 11, 12]
+
+    #This works too!
+    ws.rows.last.style = bottom_row
+
+  end
+	#
+	# ############################
+	#
+	wb.styles do |s|
+    top_bottom =  s.add_style :border => { :style => :thick, :color =>"FFFF0000", :edges => [:top, :bottom] }
+    border = s.borders[s.cellXfs[top_bottom].borderId]
+    # edit existing border parts
+    border.prs.each do |part|
+      case part.name
+      when :top
+        part.color = Axlsx::Color.new(:rgb => "FFFF0000")
+      when :bottom
+        part.color = Axlsx::Color.new(:rgb => "FF00FF00")
+      end
+    end
+
+    border.prs << Axlsx::BorderPr.new(:name => :left, :color => Axlsx::Color.new(:rgb => '0000FF'), :style => :mediumDashed)
+    wb.add_worksheet(:name => 'hacked borders') do |sheet|
+      sheet.add_row [1,2,3], :style=>top_bottom
+    end
+  end
+	#
+	# ############################
+	#
+	wb.styles do |s|
+    head = s.add_style :bg_color => "00", :fg_color => "FF"
+    percent = s.add_style :num_fmt => 9
+    wb.add_worksheet(:name => "Columns and Rows") do |sheet|
+      # Note: you must add rows to the document *BEFORE* applying column styles to them
+      sheet.add_row ['col 1', 'col 2', 'col 3', 'col 4', 'col5']
+      sheet.add_row [1, 2, 0.3, 4, 5.0]
+      sheet.add_row [1, 2, 0.2, 4, 5.0]
+      sheet.add_row [1, 2, 0.1, 4, 5.0]
+
+      #apply the percent style to the column at index 2 skipping the first row.
+      sheet.col_style 2, percent, :row_offset => 1
+
+      # apply the head style to the first row.
+      sheet.row_style 0, head
+
+      #Hide the 5th column
+      sheet.column_info[4].hidden = true
+
+      #Set the second column outline level
+      sheet.column_info[1].outlineLevel = 2
+
+      sheet.rows[3].hidden = true
+      sheet.rows[1].outlineLevel = 2
+    end
+  end
+	#
+	# ############################
+	#
+	wb.add_worksheet(:name => "custom column widths") do |sheet|
+    sheet.add_row ["I use autowidth and am very wide", "I use a custom width and am narrow"]
+    sheet.add_row ['abcdefg', 'This is a very long text and should flow into the right cell', nil, 'xxx' ]
+    sheet.column_widths nil, 3, 5, nil
+  end
+	#
+	# ############################
+	#
+	wb.styles do |s|
+    head = s.add_style :bg_color => "00", :fg_color => "FF"
+    wb.add_worksheet(:name => "fixed row height") do |sheet|
+      sheet.add_row ["This row will have a fixed height", "It will overwite the default row height"], :height => 30
+      sheet.add_row ["This row can have a different height too"], :height => 10, :style => head
+    end
+  end
+	#
+	# ############################
+	#
+	wb.add_worksheet(name: 'outline_level') do |sheet|
+    sheet.add_row [1, 2, 3, Time.now, 5, 149455.15]
+    sheet.add_row [1, 2, 5, 6, 5,14100.19]
+    sheet.add_row [9500002267, 1212, 1212, 5,14100.19]
+    sheet.outline_level_rows 0, 2
+    sheet.outline_level_columns 0, 2
+  end
+	#
+	# ############################
+	#
+	wb.add_worksheet(:name => 'Merging Cells') do |sheet|
+    # cell level style overides when adding cells
+    sheet.add_row ["col 1", "col 2", "col 3", "col 4"], :sz => 16
+    sheet.add_row [1, 2, 3, "=SUM(A2:C2)"]
+    sheet.add_row [2, 3, 4, "=SUM(A3:C3)"]
+    sheet.add_row ["anexo b - solicitud de autorizacion de transito", "", "", "=SUM(D2:D3)"]
+    sheet.merge_cells("A4:C4")
+    sheet["A1:D1"].each { |c| c.color = "FF0000"}
+    sheet["A1:D4"].each { |c| c.style = Axlsx::STYLE_THIN_BORDER }
+  end
+	#
+	# ############################
+	#
+	wb.add_worksheet(:name => 'Mergin Cell Columns') do |sheet|
+		sheet.add_row ["col 1", "col 2", "col 3", "col 4"], :sz => 16
+    sheet.add_row [1, 2, 3, "=SUM(A2:C2)"]
+    sheet.add_row [2, 3, 4, "=SUM(A3:C3)"]
+    sheet.add_row ["Totalidad total", "", "", "=SUM(D2:D3)"]
+		sheet.merge_cells("A4:C5")
+		sheet.merge_cells("D4:D5")
+		sheet["A1:D1"].each { |c| c.color = "FF0000"}
+    #sheet["A1:D5"].each { |c| c.style = Axlsx::STYLE_THIN_BORDER }
+	end
+	#
+	# ############################
+	#
+	wb.add_worksheet(:name => "Image with Hyperlink 1") do |sheet|
+    img = File.expand_path(Rails.root+'app/assets/images/selfieperroo.jpg')
+    # specifying the :hyperlink option will add a hyper link to your image.
+    #
+    # @note - Numbers does not support this part of the specification.
+
+    sheet.add_image(:image_src => img, :noSelect => true, :noMove => true, :hyperlink=>"http://axlsx.blogspot.com") do |image|
+      image.width=720
+      image.height=666
+      image.hyperlink.tooltip = "Labeled Link"
+      image.start_at 0, 0
+    end
+  end
+	#
+	# ############################
+	#
+	wb.add_worksheet(:name => "Image with Hyperlink 2") do |sheet|
+    img = File.expand_path(Rails.root+'app/assets/images/selfieperroo.jpg')
+    # specifying the :hyperlink option will add a hyper link to your image.
+    #
+    # @note - Numbers does not support this part of the specification.
+
+    # position in block
+    sheet.add_image(:image_src => img, :noSelect => true, :noMove => true, :hyperlink=>"http://axlsx.blogspot.com") do |image|
+      image.start_at 22, 14
+      image.end_at 23, 17
+    end
+
+  end
+	#
+	# ############################
+	#
+	require 'date'
+  wb.styles do |s|
+    date = s.add_style(:format_code => "yyyy-mm-dd", :border => Axlsx::STYLE_THIN_BORDER)
+    padded = s.add_style(:format_code => "00#", :border => Axlsx::STYLE_THIN_BORDER)
+    percent = s.add_style(:format_code => "0000%", :border => Axlsx::STYLE_THIN_BORDER)
+    # wb.date1904 = true # Use the 1904 date system (Used by Excel for Mac < 2011)
+    wb.add_worksheet(:name => "Formatting Data") do |sheet|
+      sheet.add_row ["Custom Formatted Date", "Percent Formatted Float", "Padded Numbers"], :style => Axlsx::STYLE_THIN_BORDER
+      sheet.add_row [Date::strptime('2012-01-19','%Y-%m-%d'), 0.2, 32], :style => [date, percent, padded]
+    end
+  end
+	#
+	# ############################
+	#
+	wb.styles.fonts.first.name = 'Arial Unicode MS'
+  wb.add_worksheet(:name => "日本語でのシート名") do |sheet|
+    sheet.add_row ["日本語"]
+    sheet.add_row ["华语/華語"]
+    sheet.add_row ["한국어/조선말"]
+  end
+	#
+	# ############################
+	#
+	wb.add_worksheet(:name => "Using Formulas") do |sheet|
+    sheet.add_row ['col 1', 'col 2', 'col 3', 'col 4']
+    sheet.add_row [1, 2, 3, "=SUM(A2:C2)"]
+  end
+	#
+	# ############################
+	#
+	wb.add_worksheet(:name => "Auto Filter") do |sheet|
+    sheet.add_row ["Build Matrix"]
+    sheet.add_row ["Build", "Duration", "Finished", "Rvm"]
+    sheet.add_row ["19.1", "1 min 32 sec", "about 10 hours ago", "1.8.7"]
+    sheet.add_row ["19.2", "1 min 28 sec", "about 10 hours ago", "1.9.2"]
+    sheet.add_row ["19.3", "1 min 35 sec", "about 10 hours ago", "1.9.3"]
+    sheet.auto_filter = "A2:D5"
+    sheet.auto_filter.add_column 3, :filters, :filter_items => ['1.9.2', '1.8.7']
+  end
+	#
+	# ############################
+	#
+	wb.add_worksheet(:name => "Automatic cell types") do |sheet|
+    date_format = wb.styles.add_style :format_code => 'YYYY-MM-DD'
+    time_format = wb.styles.add_style :format_code => 'hh:mm:ss'
+    sheet.add_row ["Date", "Time", "String", "Boolean", "Float", "Integer"]
+    sheet.add_row [Date.today, Time.now, "value", true, 0.1, 1], :style => [date_format, time_format]
+  end
+	#
+	# ############################
+	#
+	wb.add_worksheet(:name => "Override Data Type") do |sheet|
+    sheet.add_row ['dont eat my zeros!', '0088'] , :types => [nil, :string]
+  end
+	#
+	# ############################
+	#
+	wb.add_worksheet(:name => 'hyperlinks') do |sheet|
+    # external references
+    sheet.add_row ['axlsx']
+    sheet.add_hyperlink :location => 'https://github.com/randym/axlsx', :ref => sheet.rows.first.cells.first
+    # internal references
+    sheet.add_hyperlink :location => "'Next Sheet'!A1", :ref => 'A2', :target => :sheet
+    sheet.add_row ['next sheet']
+  end
+	#
+  wb.add_worksheet(:name => 'Next Sheet') do |sheet|
+    sheet.add_row ['hello!']
+  end
+	#
+	# ############################
+	#
+	wb.add_worksheet(:name => "Formats and Currency") do |sheet|
+    currency = wb.styles.add_style :num_fmt => 5
+    red_negative = wb.styles.add_style :num_fmt => 8
+    comma = wb.styles.add_style :num_fmt => 3
+    super_funk = wb.styles.add_style :format_code => '[Green]#'
+    sheet.add_row %w(Currency RedNegative Comma Custom)
+    sheet.add_row [1500, -122.34, 123456789, 594829], :style=> [currency, red_negative, comma, super_funk]
+  end
+	#
+	# ############################
+	#
+	wb.add_worksheet(:name => 'Venezuala_currency') do |sheet|
+    number = wb.styles.add_style :format_code => '#.##0\,00'
+    sheet.add_row [2.5] , :style => [number]
+  end
+
+	############################
+
+	wb.add_worksheet(:name => "Bar Chart") do |sheet|
+    sheet.add_row ["A Simple Bar Chart"]
+    %w(first second third).each { |label| sheet.add_row [label, rand(24)+1] }
+    sheet.add_chart(Axlsx::Bar3DChart, :start_at => "A6", :end_at => "F20") do |chart|
+      chart.add_series :data => sheet["B2:B4"], :labels => sheet["A2:A4"], :title => sheet["A1"], :colors => ["00FF00", "0000FF"]
+    end
+  end
+
+	############################
+
+	wb.add_worksheet(:name => "Chart With No Gridlines") do |sheet|
+    sheet.add_row ["Bar Chart without gridlines"]
+    %w(first second third).each { |label| sheet.add_row [label, rand(24)+1] }
+    sheet.add_chart(Axlsx::Bar3DChart, :start_at => "A6", :end_at => "F20") do |chart|
+      chart.add_series :data => sheet["B2:B4"], :labels => sheet["A2:A4"], :colors => ["00FF00", "FF0000"]
+      chart.valAxis.gridlines = false
+      chart.catAxis.gridlines = false
+    end
+  end
+
+	############################
+
+	wb.add_worksheet(:name => "Pie Chart") do |sheet|
+    sheet.add_row ["Simple Pie Chart"]
+    %w(first second third).each { |label| sheet.add_row [label, rand(24)+1] }
+    sheet.add_chart(Axlsx::Pie3DChart, :start_at => [0,5], :end_at => [10, 20], :title => "example 3: Pie Chart") do |chart|
+      chart.add_series :data => sheet["B2:B4"], :labels => sheet["A2:A4"],  :colors => ['FF0000', '00FF00', '0000FF']
+    end
+  end
+
+	############################
+
+	wb.add_worksheet(:name => "Line Chart") do |sheet|
+    sheet.add_row ["Simple Line Chart"]
+    sheet.add_row %w(first second)
+    4.times do
+      sheet.add_row [ rand(24)+1, rand(24)+1]
+    end
+    sheet.add_chart(Axlsx::Line3DChart, :title => "Simple 3D Line Chart", :rotX => 30, :rotY => 20) do |chart|
+      chart.start_at 0, 5
+      chart.end_at 10, 20
+      chart.add_series :data => sheet["A3:A6"], :title => sheet["A2"], :color => "0000FF"
+      chart.add_series :data => sheet["B3:B6"], :title => sheet["B2"], :color => "FF0000"
+      chart.catAxis.title = 'X Axis'
+      chart.valAxis.title = 'Y Axis'
+    end
+    sheet.add_chart(Axlsx::LineChart, :title => "Simple Line Chart", :rotX => 30, :rotY => 20) do |chart|
+      chart.start_at 0, 21
+      chart.end_at 10, 41
+      chart.add_series :data => sheet["A3:A6"], :title => sheet["A2"], :color => "FF0000", :show_marker => true, :smooth => true
+      chart.add_series :data => sheet["B3:B6"], :title => sheet["B2"], :color => "00FF00"
+      chart.catAxis.title = 'X Axis'
+      chart.valAxis.title = 'Y Axis'
+    end
+
+  end
+
+	############################
+
+	wb.add_worksheet(:name => "Scatter Chart") do |sheet|
+    sheet.add_row ["First",  1,  5,  7,  9]
+    sheet.add_row ["",       1, 25, 49, 81]
+    sheet.add_row ["Second", 5,  2, 14,  9]
+    sheet.add_row ["",       5, 10, 15, 20]
+    sheet.add_chart(Axlsx::ScatterChart, :title => "example 7: Scatter Chart") do |chart|
+      chart.start_at 0, 4
+      chart.end_at 10, 19
+      chart.add_series :xData => sheet["B1:E1"], :yData => sheet["B2:E2"], :title => sheet["A1"], :color => "FF0000"
+      chart.add_series :xData => sheet["B3:E3"], :yData => sheet["B4:E4"], :title => sheet["A3"], :color => "00FF00"
+    end
+  end
+
+	############################
+
+	wb.add_worksheet(:name => "Table") do |sheet|
+    sheet.add_row ["Build Matrix"]
+    sheet.add_row ["Build", "Duration", "Finished", "Rvm"]
+    sheet.add_row ["19.1", "1 min 32 sec", "about 10 hours ago", "1.8.7"]
+    sheet.add_row ["19.2", "1 min 28 sec", "about 10 hours ago", "1.9.2"]
+    sheet.add_row ["19.3", "1 min 35 sec", "about 10 hours ago", "1.9.3"]
+    sheet.add_table "A2:D5", :name => 'Build Matrix', :style_info => { :name => "TableStyleMedium23" }
+  end
+
+	############################
+
+	wb.add_worksheet(:name => "fit to page") do |sheet|
+    sheet.add_row ['this all goes on one page']
+    sheet.page_setup.fit_to :width => 1, :height => 1
+  end
+
+	############################
+
+	wb.add_worksheet(:name => "No Gridlines") do |sheet|
+    sheet.add_row ["This", "Sheet", "Hides", "Gridlines"]
+    sheet.sheet_view.show_grid_lines = false
+  end
+
+	############################
+
+	wb.add_worksheet(:name => "repeated header") do |sheet|
+    sheet.add_row %w(These Column Header Will Render On Every Printed Sheet)
+    200.times { sheet.add_row %w(1 2 3 4 5 6 7 8) }
+    wb.add_defined_name("'repeated header'!$1:$1", :local_sheet_id => sheet.index, :name => '_xlnm.Print_Titles')
+  end
+
+	############################
+
+	wb.add_worksheet(:name => 'defined name') do |sheet|
+    sheet.add_row [1, 2, 17, '=FOOBAR']
+    wb.add_defined_name("'defined name'!$C1", :local_sheet_id => sheet.index, :name => 'FOOBAR')
+  end
+
+	############################
+
+	unlocked = wb.styles.add_style :locked => false
+  wb.add_worksheet(:name => 'Sheet Protection') do |sheet|
+    sheet.sheet_protection.password = 'fish'
+    sheet.add_row [1, 2 ,3] # These cells will be locked
+    sheet.add_row [4, 5, 6], :style => unlocked # these cells will not!
+  end
+
+	############################
+
+	margins = {:left => 3, :right => 3, :top => 1.2, :bottom => 1.2, :header => 0.7, :footer => 0.7}
+  setup = {:fit_to_width => 1, :orientation => :landscape, :paper_width => "297mm", :paper_height => "210mm"}
+  options = {:grid_lines => true, :headings => true, :horizontal_centered => true}
+  wb.add_worksheet(:name => "print margins", :page_margins => margins, :page_setup => setup, :print_options => options) do |sheet|
+    sheet.add_row ["this sheet uses customized print settings"]
+  end
+
+	############################
+
+	header_footer = {:different_first => false, :odd_header => '&L&F : &A&R&D &T', :odd_footer => '&C&Pof&N'}
+  wb.add_worksheet(:name => "header footer", :header_footer => header_footer) do |sheet|
+    sheet.add_row ["this sheet has a header and a footer"]
+  end
+
+	############################
+
+	wb.add_worksheet(:name => 'comments') do |sheet|
+    sheet.add_row ['Can we build it?']
+    sheet.add_comment :ref => 'A1', :author => 'Bob', :text => 'Yes We Can!'
+    sheet.add_comment :ref => 'A2', :author => 'Bob', :text => 'Yes We Can! - but I dont think  you need to know about it!', :visible => false
+
+  end
+
+	############################
+
+	wb.add_worksheet(:name => 'panes') do |sheet|
+    sheet.add_row(['',  (0..99).map { |i| "column header #{i}" }].flatten )
+    100.times.with_index { |index| sheet << ["row header", (0..index).to_a].flatten }
+    sheet.sheet_view.pane do |pane|
+      pane.top_left_cell = "B2"
+      pane.state = :frozen_split
+      pane.y_split = 1
+      pane.x_split = 1
+      pane.active_pane = :bottom_right
+    end
+  end
+
+	############################
+
+	percent = wb.styles.add_style(:format_code => "0.00%", :border => Axlsx::STYLE_THIN_BORDER)
+  money = wb.styles.add_style(:format_code => '0,000', :border => Axlsx::STYLE_THIN_BORDER)
+  status = wb.styles.add_style(:border => Axlsx::STYLE_THIN_BORDER)
+
+  # define the style for conditional formatting
+  profitable = wb.styles.add_style( :fg_color => "FF428751", :type => :dxf )
+  unprofitable = wb.styles.add_style( :fg_color => "FF0000", :type => :dxf )
+
+  wb.add_worksheet(:name => "Conditional Cell Is") do |sheet|
+
+    # Generate 20 rosheet of data
+    sheet.add_row ["Previous Year Quarterly Profits (JPY)"]
+    sheet.add_row ["Quarter", "Profit", "% of Total"]
+    offset = 3
+    rosheet = 20
+    offset.upto(rosheet + offset) do |i|
+      sheet.add_row ["Q#{i}", 10000*((rosheet/2-i) * (rosheet/2-i)), "=100*B#{i}/SUM(B3:B#{rosheet+offset})"], :style=>[nil, money, percent]
+    end
+
+    # Apply conditional formatting to range B3:B100 in the worksheet
+    sheet.add_conditional_formatting("B3:B100", { :type => :cellIs, :operator => :greaterThan, :formula => "100000", :dxfId => profitable, :priority => 1 })
+    # Apply conditional using the between operator; NOTE: supply an array to :formula for between/notBetween
+    sheet.add_conditional_formatting("C3:C100", { :type => :cellIs, :operator => :between, :formula => ["0.00%","100.00%"], :dxfId => unprofitable, :priority => 1 })
+  end
+
+  wb.add_worksheet(:name => "Conditional Color Scale") do |sheet|
+    sheet.add_row ["Previous Year Quarterly Profits (JPY)"]
+    sheet.add_row ["Quarter", "Profit", "% of Total"]
+    offset = 3
+    rosheet = 20
+    offset.upto(rosheet + offset) do |i|
+      sheet.add_row ["Q#{i}", 10000*((rosheet/2-i) * (rosheet/2-i)), "=100*B#{i}/SUM(B3:B#{rosheet+offset})"], :style=>[nil, money, percent]
+    end
+    # color scale has two_tone and three_tone class methods to setup the excel defaults (2011)
+    # alternatively, you can pass in {:type => [:min, :max, :percent], :val => [whatever], :color =>[Some RGB String] to create a customized color scale object
+
+    color_scale = Axlsx::ColorScale.three_tone
+    sheet.add_conditional_formatting("B3:B100", { :type => :colorScale, :operator => :greaterThan, :formula => "100000", :dxfId => profitable, :priority => 1, :color_scale => color_scale })
+  end
+
+
+  wb.add_worksheet(:name => "Conditional Data Bar") do |sheet|
+    sheet.add_row ["Previous Year Quarterly Profits (JPY)"]
+    sheet.add_row ["Quarter", "Profit", "% of Total"]
+    offset = 3
+    rows = 20
+    offset.upto(rows + offset) do |i|
+      sheet.add_row ["Q#{i}", 10000*((rows/2-i) * (rows/2-i)), "=100*B#{i}/SUM(B3:B#{rows+offset})"], :style=>[nil, money, percent]
+    end
+    # Apply conditional formatting to range B3:B100 in the worksheet
+    data_bar = Axlsx::DataBar.new
+    sheet.add_conditional_formatting("B3:B100", { :type => :dataBar, :dxfId => profitable, :priority => 1, :data_bar => data_bar })
+  end
+
+  wb.add_worksheet(:name => "Conditional Format Icon Set") do |sheet|
+    sheet.add_row ["Previous Year Quarterly Profits (JPY)"]
+    sheet.add_row ["Quarter", "Profit", "% of Total"]
+    offset = 3
+    rows = 20
+    offset.upto(rows + offset) do |i|
+      sheet.add_row ["Q#{i}", 10000*((rows/2-i) * (rows/2-i)), "=100*B#{i}/SUM(B3:B#{rows+offset})"], :style=>[nil, money, percent]
+    end
+    # Apply conditional formatting to range B3:B100 in the worksheet
+    icon_set = Axlsx::IconSet.new
+    sheet.add_conditional_formatting("B3:B100", { :type => :iconSet, :dxfId => profitable, :priority => 1, :icon_set => icon_set })
+  end
+
+  wb.add_worksheet(:name => "Contains Text") do |sheet|
+    sheet.add_row ["Previous Year Quarterly Profits (JPY)"]
+    sheet.add_row ["Quarter", "Profit", "% of Total", "Status"]
+    offset = 3
+    rows = 20
+    offset.upto(rows + offset) do |i|
+      sheet.add_row ["Q#{i}", 10000*((rows/2-i) * (rows/2-i)), "=100*B#{i}/SUM(B3:B#{rows+offset})", (10000*((rows/2-i) * (rows/2-i))) > 100000 ? "PROFIT" : "LOSS"], :style=>[nil, money, percent, status]
+    end
+  # Apply conditional formatting to range D3:D100 in the worksheet to match words.
+    sheet.add_conditional_formatting("D3:D100", { :type => :containsText, :operator => :equal, :text => "PROFIT", :dxfId => profitable, :priority => 1 })
+    sheet.add_conditional_formatting("D3:D100", { :type => :containsText, :operator => :equal, :text => "LOSS", :dxfId => unprofitable, :priority => 1 })
+  end

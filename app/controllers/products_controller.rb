@@ -6,6 +6,6 @@ class ProductsController < ApplicationController
 	    	format.xlsx {
     			response.headers['Content-Disposition'] = 'attachment; filename="all_products.xlsx"'
   			}
-	  	end
+	  end
 	end
 end
